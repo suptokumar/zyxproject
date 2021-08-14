@@ -1,0 +1,10 @@
+.layout-sidebar-large .main-header .logo img {
+    width: 150px;
+    height: 54px;
+    margin: 0 auto;
+    display: block;
+}
+.nav-item.re_active {
+    background: #f3edf9;
+    border-bottom: 5px solid rebeccapurple !important;
+}
