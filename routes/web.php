@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
+Route::get("login","soft@login");
+Route::post("login","soft@login_check");
+Route::get("forgetpassword","soft@forgetpassword");
+Route::group(['middleware'=>'login'],function(){
+Route::get('/', 'soft@index');
 });
