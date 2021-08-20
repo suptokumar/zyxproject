@@ -36,19 +36,24 @@ width: 260px;
 
                                 <div class="form-group">
                                     <label for="email">Email address</label>
-                                    <input id="email" class="form-control form-control-rounded" type="email">
+                                    <input id="email" class="form-control form-control-rounded" name="email" type="email">
                                 </div>
                                 <div class="form-group">
                                     <label for="password">Password</label>
-                                    <input id="password" class="form-control form-control-rounded" type="password">
+                                    <input id="password" class="form-control form-control-rounded" name="password" type="password">
                                 </div>
-                                <button class="btn btn-rounded btn-primary btn-block mt-2">Sign In</button>
+                                <input type="hidden" value="{{url()->previous()}}" name="redirect">
+                                <button type="submit" class="btn btn-rounded btn-primary btn-block mt-2">Sign In</button>
 
                             </form>
 
                             <div class="mt-3 text-center">
+                                <a href="{{ url('/signup') }}" class="text-muted"><u>Sign Up</u></a>
+                            </div>
+                            <div class="mt-2 text-center">
                                 <a href="{{ url('/forgetpassword') }}" class="text-muted"><u>Forgot Password?</u></a>
                             </div>
+                           
                         </div>
                     </div>
                     <div class="col-md-6 text-center " style="background-size: cover;background-image: url({{ url('/public') }}/src/assets/images/photo-long-3.jpg)">

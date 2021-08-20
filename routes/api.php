@@ -18,4 +18,5 @@ Route::group(["middleware"=>"api_token"],function(){
     Route::get("create-vendor","api\\vendor@create_vendor");
     Route::get("get-vendor","api\\vendor@get_vendor");
     Route::post("update-vendor","api\\vendor@update_vendor");
+    Route::post("delete-vendor","api\\vendor@delete_vendor");
 });

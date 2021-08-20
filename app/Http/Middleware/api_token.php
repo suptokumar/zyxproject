@@ -19,11 +19,13 @@ class api_token
         $hash = "aaa";
         $token = '$2y$10$r.vc8Xw4WmAMXnB0uX3uo.mjqqAiJzKmZgYmxEkHxcY7CWau.HGuu';
         if(!$request->token){
-        echo "Token Not Found";
+        echo json_encode(["status"=>201,"message"=>"Token Not Found"]);
+
         exit();
         }
         if(!Hash::check($hash,$request->token)){
-        echo "Token Not Valid";
+        echo json_encode(["status"=>201,"message"=>"Token Not Valid"]);
+
         exit();
         }
         return $next($request);

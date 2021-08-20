@@ -56,6 +56,24 @@ class vendor extends Controller
         }
 
     }
+    function delete_vendor(Request $request)
+    {
+        if(!$request->id)
+        {
+            return  json_encode(["status"=>201,"message"=>"`id` field is Required"]);
+        }else{
+            $vendor = uservendor::find($request->id);
+            if($vendor){
+            if($vendor->delete()){
+                return json_encode(["status"=>200,"message"=>"Vendor Deleted Successfuly"]);
+            }else{
+                return json_encode(["status"=>202,"message"=>"Failed to Delete Vendor"]);
+            }
+            }else{
+            return  json_encode(["status"=>201,"message"=>"The requested id not matched."]);
+            }
+        }
+    }
 
     function update_vendor(Request $request)
     {

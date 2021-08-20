@@ -133,7 +133,7 @@
 
                 <ul class="childNav" data-parent="vendor">
                     <li class="nav-item">
-                        <a href="form.basic.html">
+                        <a href="{{url('view/allvendor')}}">
                             <i class="nav-icon i-Full-View-Window"></i>
                             <span class="item-name">View All Vendors</span>
                         </a>
@@ -157,7 +157,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="smart.wizard.html">
+                        <a href="{{url('create/vendor')}}">
                             <i class="nav-icon i-Add"></i>
                             <span class="item-name">Create New Vendor</span>
                         </a>
