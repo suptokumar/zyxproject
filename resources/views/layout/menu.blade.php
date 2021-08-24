@@ -226,6 +226,12 @@
                             <span class="item-name">App Settings</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="{{ url('/settings/mobileui') }}">
+                            <i class="nav-icon i-Settings-Window"></i>
+                            <span class="item-name">Mobile UI</span>
+                        </a>
+                    </li>
                 </ul>
 
 

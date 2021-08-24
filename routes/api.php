@@ -15,8 +15,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(["middleware"=>"api_token"],function(){
-    Route::get("create-vendor","api\\vendor@create_vendor");
-    Route::get("get-vendor","api\\vendor@get_vendor");
-    Route::post("update-vendor","api\\vendor@update_vendor");
-    Route::post("delete-vendor","api\\vendor@delete_vendor");
+    // Vendor
+    Route::post("create-vendor","api\\vendor_ct@create_vendor");
+    Route::post("get-vendor","api\\vendor_ct@get_vendor");
+    Route::post("update-vendor","api\\vendor_ct@update_vendor");
+    Route::post("delete-vendor","api\\vendor_ct@delete_vendor");
+    // Domain
+    Route::post("get-domain","api\\domain_ct@get_domain");
+    Route::post("check-domain","api\\domain_ct@check_domain");
+    Route::post("create-domain","api\\domain_ct@create_domain");
+    Route::post("delete-domain","api\\domain_ct@delete_domain");
+    // Mobile UI
+    Route::post("get-mobileUI","api\\mobile_ct@mobileui");
 });

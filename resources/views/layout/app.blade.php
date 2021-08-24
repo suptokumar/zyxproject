@@ -9,7 +9,8 @@
     <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,400i,600,700,800,900" rel="stylesheet">
     <link rel="stylesheet" href="{{url('/public/src/assets')}}/styles/css/themes/lite-purple.min.css">
     <link rel="stylesheet" href="{{url('/public/src/assets')}}/styles/vendor/perfect-scrollbar.css">
-    <link rel="stylesheet" href="{{url('/public/css')}}/overwrite.css">
+    <link rel="stylesheet" href="{{url('/public/src/assets')}}/styles/vendor/datatables.min.css">
+    <link rel="stylesheet" href="{{url('/public/css')}}/overwrite.css?verson={{rand()}}">
     <link rel="icon" href="{{url('/public/image')}}/logo.png">
 </head>
 
