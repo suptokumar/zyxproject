@@ -50,7 +50,7 @@ class vendor_ct extends Controller
             }
         }else{
             if($request->key){
-                return json_encode(["status"=>201,"data"=>uservendor::find($request->key),"domain"=>domain::where("vendor_id",$request->key)]);
+                return json_encode(["status"=>200,"data"=>uservendor::find($request->key),"domain"=>domain::where("vendor_id",$request->key)]);
             }else{
                 return json_encode(uservendor::get());
             }

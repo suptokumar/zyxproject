@@ -1,4 +1,3 @@
-
         <div class="side-content-wrap">
             <div class="sidebar-left open rtl-ps-none" data-perfect-scrollbar data-suppress-scroll-x="true">
                 <ul class="navigation-left">
@@ -296,13 +295,13 @@
                 
                 <ul class="childNav" data-parent="custom_pages">
                     <li class="nav-item">
-                        <a href="dashboard.v1.html">
+                        <a href="{{ url('/view/pages') }}">
                             <i class="nav-icon i-Full-View-Window"></i>
                             <span class="item-name">List Custom page</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="dashboard.v2.html">
+                        <a href="{{ url('/create/pages') }}">
                             <i class="nav-icon i-Add"></i>
                             <span class="item-name">Add Custom Page</span>
                         </a>
@@ -381,19 +380,19 @@
                 
                 <ul class="childNav" data-parent="FAQs">
                     <li class="nav-item">
-                        <a href="dashboard.v1.html">
+                        <a href="{{url('faqs')}}">
                             <i class="nav-icon i-Full-View-Window"></i>
                             <span class="item-name">View All</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="dashboard.v2.html">
+                        <a href="{{url('create/faqs')}}">
                             <i class="nav-icon i-Add"></i>
                             <span class="item-name">Add New</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="dashboard.v2.html">
+                        <a href="{{url('faqs/category')}}">
                             <i class="nav-icon i-Optimization"></i>
                             <span class="item-name">Manage Category</span>
                         </a>
@@ -402,25 +401,25 @@
                 
                 <ul class="childNav" data-parent="coupons">
                     <li class="nav-item">
-                        <a href="dashboard.v1.html">
+                        <a href="{{url("/coupons")}}">
                             <i class="nav-icon i-Full-View-Window"></i>
                             <span class="item-name">View Coupons</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="dashboard.v2.html">
+                        <a href="{{url("/addcoupons")}}">
                             <i class="nav-icon i-Add"></i>
                             <span class="item-name">Add Coupons</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="dashboard.v1.html">
+                        <a href="{{url("/bankoffers")}}">
                             <i class="nav-icon i-Full-View-Window"></i>
                             <span class="item-name">View Bank offers</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="dashboard.v2.html">
+                        <a href="{{url("/addbankoffers")}}">
                             <i class="nav-icon i-Add"></i>
                             <span class="item-name">Add Bank offers</span>
                         </a>
@@ -456,15 +455,27 @@
                 
                 <ul class="childNav" data-parent="banners">
                     <li class="nav-item">
-                        <a href="dashboard.v1.html">
+                        <a href="{{url('view/banners')}}">
                             <i class="nav-icon i-Full-View-Window"></i>
                             <span class="item-name">List Banner</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="dashboard.v2.html">
+                        <a href="{{url('create/banners')}}">
                             <i class="nav-icon i-Add"></i>
                             <span class="item-name">Create Banner</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{url('category/banners')}}">
+                            <i class="nav-icon i-Add"></i>
+                            <span class="item-name">Banner Category</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{{url('location/banners')}}">
+                            <i class="nav-icon i-Add"></i>
+                            <span class="item-name">Banner Location</span>
                         </a>
                     </li>
                 </ul>

@@ -18,10 +18,10 @@ class settings extends Controller
         $categories = [];
         $path = [];
         $data = [];
-        $category = scandir(public_path("\mobileui"));
+        $category = scandir(public_path("/mobileui"));
         foreach($category as $folder){
         if($folder!="." && $folder != ".."){
-            $file = scandir(public_path("\mobileui/".str_replace(" ","-", strtolower($folder))));
+            $file = scandir(public_path("/mobileui/".str_replace(" ","-", strtolower($folder))));
             foreach($file as  $fread){
                 if($fread!=".." && $fread != "."){
                     array_push($files,$fread);
@@ -65,10 +65,10 @@ class settings extends Controller
         $categories = [];
         $path = [];
         $data = [];
-        $category = scandir(public_path("\mobileui"));
+        $category = scandir(public_path("/mobileui"));
         foreach($category as $folder){
         if($folder!="." && $folder != ".."){
-            $file = scandir(public_path("\mobileui/".str_replace(" ","-", strtolower($folder))));
+            $file = scandir(public_path("/mobileui/".str_replace(" ","-", strtolower($folder))));
             foreach($file as  $fread){
                 if($fread!=".." && $fread != "."){
                     array_push($files,$fread);
@@ -81,14 +81,14 @@ class settings extends Controller
         }
 
 
-        if (!file_exists(public_path("\mobileui\\".str_replace(" ","-", strtolower($request->category))))) {
-            mkdir(public_path("\mobileui\\".str_replace(" ","-", strtolower($request->category))), 0777, true);
+        if (!file_exists(public_path("/mobileui/".str_replace(" ","-", strtolower($request->category))))) {
+            mkdir(public_path("/mobileui/".str_replace(" ","-", strtolower($request->category))), 0777, true);
         }
         
 
 
-        if (!file_exists(public_path("\mobileui\\".str_replace(" ","-", strtolower($request->category)))."\\".$request->file.".json")) {
-            $filed = fopen(public_path("\mobileui\\".str_replace(" ","-", strtolower($request->category)))."\\".$request->file.".json","w");
+        if (!file_exists(public_path("/mobileui/".str_replace(" ","-", strtolower($request->category)))."/".$request->file.".json")) {
+            $filed = fopen(public_path("/mobileui/".str_replace(" ","-", strtolower($request->category)))."/".$request->file.".json","w");
             echo fwrite($filed,$request->json);
             fclose($filed);
         }else{
@@ -117,7 +117,7 @@ class settings extends Controller
         }
 
 
-        if (!file_exists(public_path("\mobileui".$request->prev_file))) {
+        if (!file_exists(public_path("/mobileui".$request->prev_file))) {
             if(unlink(public_path($request->prev_file))){
             }else{
             }
@@ -132,10 +132,10 @@ class settings extends Controller
         $categories = [];
         $path = [];
         $data = [];
-        $category = scandir(public_path("\mobileui"));
+        $category = scandir(public_path("/mobileui"));
         foreach($category as $folder){
         if($folder!="." && $folder != ".."){
-            $file = scandir(public_path("\mobileui/".str_replace(" ","-", strtolower($folder))));
+            $file = scandir(public_path("/mobileui/".str_replace(" ","-", strtolower($folder))));
             foreach($file as  $fread){
                 if($fread!=".." && $fread != "."){
                     array_push($files,$fread);
@@ -148,14 +148,14 @@ class settings extends Controller
         }
 
 
-        if (!file_exists(public_path("\mobileui\\".str_replace(" ","-", strtolower($request->category))))) {
-            mkdir(public_path("\mobileui\\".str_replace(" ","-", strtolower($request->category))), 0777, true);
+        if (!file_exists(public_path("/mobileui/".str_replace(" ","-", strtolower($request->category))))) {
+            mkdir(public_path("/mobileui/".str_replace(" ","-", strtolower($request->category))), 0777, true);
         }
         
 
 
-        if (!file_exists(public_path("\mobileui\\".str_replace(" ","-", strtolower($request->category)))."\\".$request->file.".json")) {
-            $filed = fopen(public_path("\mobileui\\".str_replace(" ","-", strtolower($request->category)))."\\".$request->file.".json","w");
+        if (!file_exists(public_path("/mobileui/".str_replace(" ","-", strtolower($request->category)))."/".$request->file.".json")) {
+            $filed = fopen(public_path("/mobileui/".str_replace(" ","-", strtolower($request->category)))."/".$request->file.".json","w");
             echo fwrite($filed,$request->json);
             fclose($filed);
         }else{
@@ -172,7 +172,7 @@ class settings extends Controller
     }
 
     function deleteui(Request $request){
-        if (!file_exists(public_path("\mobileui".$request->id))) {
+        if (!file_exists(public_path("/mobileui".$request->id))) {
             if(unlink(public_path($request->id))){
                 return json_encode(['status'=>200,"message"=>__("Successfuly Deleted.")]);
             }else{

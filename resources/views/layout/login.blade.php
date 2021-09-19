@@ -8,6 +8,7 @@
     <title>ZYX Admin Panel Login</title>
     <link href="https://fonts.googleapis.com/css?family=Nunito:300,400,400i,600,700,800,900" rel="stylesheet">
     <link rel="stylesheet" href="{{ url('/public') }}/src/assets/styles/css/themes/dark-purple.min.css">
+    <link rel="stylesheet" href="{{ url('/public/src/assets/styles/css/themes/dark-purple.min.css') }}">
 <style>
 .auth-logo img {
 width: 260px;

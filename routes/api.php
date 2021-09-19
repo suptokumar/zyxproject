@@ -27,4 +27,31 @@ Route::group(["middleware"=>"api_token"],function(){
     Route::post("delete-domain","api\\domain_ct@delete_domain");
     // Mobile UI
     Route::post("get-mobileUI","api\\mobile_ct@mobileui");
+    // Create APP USER
+    Route::post("create-appuser","api\\appuser_ct@create_appuser");
+    Route::post("get-appuser","api\\appuser_ct@get_appuser");
+    Route::post("delete-appuser","api\\appuser_ct@delete_appuser");
+    Route::post("update-appuser","api\\appuser_ct@update_appuser");
+    // FAQ Modules
+    Route::post("faq-category","api\\faq_ct@get_faq_category");
+    Route::post("create-faq","api\\faq_ct@create_faq");
+    Route::post("get-faq","api\\faq_ct@get_faq");
+    Route::post("update-faq","api\\faq_ct@update_faq");
+    Route::post("delete-faqs","api\\faq_ct@delete_faq");
+
+    // banners Modules
+    Route::post("get-banners","api\\banners_ct@get_banners");
+    Route::post("get-banner-category","api\\banners_ct@get_banner_category");
+    Route::post("get-banner-location","api\\banners_ct@get_banner_location");
+    Route::post("create-banners","api\\banners_ct@create_banners");   
+    Route::post("update-banners","api\\banners_ct@update_banners");
+    Route::post("delete-banners","api\\banners_ct@delete_banners");
+     // pages Modules
+     Route::post("create-pages","api\\pages_ct@create_pages");
+     Route::post("get-pages","api\\pages_ct@get_pages");
+     Route::post("update-pages","api\\pages_ct@update_pages");
+     Route::post("delete-pages","api\\pages_ct@delete_pages");
+  // Coupon Modules
+     Route::post("get-coupons","api\\coupons_ct@getcoupons");
+     Route::post("get-bankoffers","api\\coupons_ct@getbankoffers");
 });

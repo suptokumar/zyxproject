@@ -6,7 +6,7 @@ use Illuminate\Http\RedirectResponse;
 use App\Models\User;
 use App\Models\uservendor;
 use Illuminate\Http\Request;
-use Auth;
+use Illuminate\Support\Facades\Auth; 
 use Carbon\Carbon;
 use Hash;
 
@@ -21,7 +21,7 @@ class soft extends Controller
 
     function login()
     {
-        if(!Auth::check()){
+        if(!Auth::guard('admin')->check()){
             return view("layout.login");
         }else{
             return redirect("/");
@@ -29,8 +29,8 @@ class soft extends Controller
     }
     function logout()
     {
-        if(Auth::check()){
-            Auth::logout();
+        if(Auth::guard('admin')->check()){
+            Auth::guard('admin')->logout();
             return redirect("/login");
 
         }else{
@@ -39,7 +39,7 @@ class soft extends Controller
     }
     function signup()
     {
-       if(Auth::check()){
+       if(Auth::guard('admin')->check()){
          return redirect("/login");
      }
         return view("layout.signup");
@@ -47,7 +47,7 @@ class soft extends Controller
 
     function forgetpassword()
     {
-        if(!Auth::check()){
+        if(!Auth::guard('admin')->check()){
             return view("layout.forgetpassword");
         }else{
             return redirect("/");
@@ -55,7 +55,7 @@ class soft extends Controller
     }
 
      public function login_check(Request $request){
-        if (Auth::check()) {
+        if (Auth::guard('admin')->check()) {
             return redirect('/');
         }else{
 
@@ -64,7 +64,8 @@ class soft extends Controller
                 'email'=>$request->get("email"),
                 'password'=>$request->get("password")
             ];
-                if (Auth::attempt($user_details2, true)) {
+                if (Auth::guard('admin')->attempt(['email' => $request->email, 'password' => $request->password], true)) {
+                 
                 if ($request->get("redirect")=='') {
 
                     return redirect('/');
@@ -78,7 +79,7 @@ class soft extends Controller
 
      public function register(Request $request)
      {
-        if (Auth::check()) {
+        if (Auth::guard('admin')->check()) {
             return redirect('/');
         }else
             {
