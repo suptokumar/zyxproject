@@ -48,8 +48,8 @@
                                             <th scope="col">#</th>
                                             <th scope="col">Name</th>
                                             <th scope="col">logo</th>
-                                            <th scope="col">Store Category</th>
-                                            <th scope="col">Email</th>
+                                            <th scope="col">Vendor Category</th>
+                                            <th scope="col">Phone Number</th>
                                             <th scope="col">Status</th>
                                             <th scope="col">Action</th>
                                         </tr>
@@ -59,16 +59,16 @@
                                             $i= 1;
                                         @endphp
                                         @forelse ($allverdors as $allverdor)
-                                            
+
                                         <tr id="unis{{$allverdor->id}}">
                                             <th scope="row">{{$i++}}</th>
-                                            <td>{{$allverdor->name}}</td>
+                                            <td>{{$allverdor->vendorName}}</td>
                                             <td>
-                                                <img class="rounded-circle m-0 avatar-sm-table " src="{{$allverdor->logo==''?url("/public/src/assets/images/faces/1.jpg") : url($allverdor->logo)}}" alt="">
+                                                <img class="rounded-circle m-0 avatar-sm-table " src="{{$allverdor->storeWebLogo==''?url("/public/src/assets/images/faces/1.jpg") : url("/public/uploads/storeweblogo/".$allverdor->storeWebLogo)}}" alt="">
                                             </td>
-                                            <td>{{$allverdor->store_category}}</td>
-                                            <td>{{$allverdor->email}}</td>
-                                            <td><span class="badge badge-success">Active</span></td>
+                                            <td>{{$allverdor->vendorCategory}}</td>
+                                            <td>{{$allverdor->vendorCountryCode}} {{$allverdor->vendorContactNumber}}</td>
+                                            <td><span class="badge badge-{{$allverdor->badge}}">{{$allverdor->status}}</span></td>
                                             <td>
                                                 <a href="{{url('edit/vendor')}}/{{$allverdor->id}}" class="text-success mr-2">
                                                     <i class="nav-icon i-Pen-2 font-weight-bold"></i>
@@ -81,9 +81,9 @@
 
                                         @empty
                                         <tr>
-                                            <td colspan="50" class="text-center text-info">Vendor is not aviable</td>
+                                            <td colspan="50" class="text-center text-info">Vendor is not available</td>
                                         </tr>
-                                        @endforelse                                        
+                                        @endforelse
                                     </tbody>
                                 </table>
 
@@ -124,7 +124,7 @@
                                             .done(function(data) {
                                                 let d = JSON.parse(data);
                                                 if(d.status==200){
-                       
+
                                                     $("#"+back_link).fadeOut(200);
                                                 }
                                                 Swal.fire({
@@ -136,8 +136,8 @@
                                             })
                                             });
 
-                                            
-                                             
+
+
                                     }
                                 </script>
                             </div>

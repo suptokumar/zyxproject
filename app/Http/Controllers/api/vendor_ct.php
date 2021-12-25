@@ -3,35 +3,327 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
-use App\Models\uservendor;
+use App\Http\Controllers\Notification;
+use App\Models\Product;
+use App\Models\smstemplate;
+use App\Models\Vendor;
+use App\Models\vendorpayout;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use App\Models\domain;
 
 class vendor_ct extends Controller
 {
+    function approve_payout(Request $request)
+    {
+        if($request->text){
+            if ($request->id)
+            {
+                if($payout = vendorpayout::find($request->id)){
+                    $text = "";
+                    if($request->text == "Accept"){
+                        $payout->requestStatus = 1;
+                        $text = "Rejected";
+                    }
+                    if($request->text == "Reject"){
+                        $payout->requestStatus = 2;
+                        $text = "Accepted";
+
+                    }
+                    if($payout->save()){
+                        // if you want to perform any actions now you can create a use this function;
+                        $this->payout($request->id, $text);
+                        return response()->json(
+                            [
+                                "status"=>200,
+                                "message"=>__("Changed Successfully."),
+                                "text"=>$text
+                            ],
+                        );
+                    }else{
+                        return response()->json(
+                            [
+                                "status"=>201,
+                                "message"=>__("Failed To Save it"),
+                            ],
+                        );
+                    }
+                }
+                return response()->json(
+                    [
+                        "status"=>201,
+                        "message"=>__("Id Not Matched")
+                    ],
+                );
+
+            }
+            return response()->json(
+                [
+                    "status"=>201,
+                    "message"=>__("Id Not Found")
+                ],
+            );
+
+        }
+        return response()->json(
+            [
+                "status"=>201,
+                "message"=>__("Text Not Found")
+            ],
+        );
+    }
+    function createPayoutRequest(Request $request)
+    {
+        $payout = new vendorpayout;
+        if($request->vendorId && vendor::find($request->vendorId)){
+            $payout->vendorId = $request->vendorId;
+        }else{
+            return response()->json(
+                [
+                    "status"=>201,
+                    "message"=>__("Vendor Id Not Found")
+                ],
+            );
+        }
+        if($request->requestAmount){
+            $payout->requestAmount = $request->requestAmount;
+        }else{
+            return response()->json(
+                [
+                    "status"=>201,
+                    "message"=>__("requestAmount Not Found")
+                ],
+            );
+        }
+        if($request->totalCommission){
+            $payout->totalCommission = $request->totalCommission;
+        }else{
+            return response()->json(
+                [
+                    "status"=>201,
+                    "message"=>__("totalCommission Not Found")
+                ],
+            );
+        }
+        if($request->paymentMethod){
+            $payout->paymentMethod = $request->paymentMethod;
+        }else{
+            return response()->json(
+                [
+                    "status"=>201,
+                    "message"=>__("paymentMethod Not Found")
+                ],
+            );
+        }
+
+        $payout->requestDate = date("Y-m-d H:i:s");
+        $payout->transactionId = sha1(time());
+        $payout->requestStatus = 0;
+        $payout->ActionTakenDate = null;
+        $payout->adminComments = "";
+
+        if ($payout->save()){
+            return response()->json(
+                [
+                    "status"=>200,
+                    "message"=>__("Request Saved"),
+                    "data"=>$payout
+                ],
+            );
+        }else{
+            return response()->json(
+                [
+                    "status"=>200,
+                    "message"=>__("Failed to Proccess Request"),
+                    "data"=>$payout
+                ],
+            );
+        }
+
+    }
+    function vendorstatuschange(Request $request)
+    {
+        if ($request->id)
+        {
+            if($payout = vendor::find($request->id)){
+                $payout->vendorStatus = $request->val;
+
+                if($payout->save()){
+                    $Notification = new Notification;
+                    $successMessage = "";
+                    if($payout->vendorStatus == 1){
+                        $successMessage = smstemplate::where("message_id","zyroxactivatedvendor")->first();
+                    }
+                    if($payout->vendorStatus == 2){
+                        $successMessage = smstemplate::where("message_id","zyroxvendordecline")->first();
+                    }
+                    $successMessageText = str_replace(array("{#var#}"),array($payout->vendorName),$successMessage->message);
+                    $successMessageTemplateId = $successMessage->template_id;
+                    $Notification->setMessage($successMessageText);
+                    $Notification->setPath($payout->vendorCountryCode.$payout->vendorContactNumber);
+                    $Notification->setTitle("ZYX Notification");
+                    $Notification->setImage(url("public/image/header.png"));
+                    $Notification->TemplateId = $successMessageTemplateId;
+                    $Notification->sendSMS();
+                    $Notification->sendEmail();
+                    $Notification->sendFCM();
+                    return response()->json(
+                        [
+                            "status"=>200,
+                            "message"=>__("Changed Successfully."),
+                        ],
+                    );
+                }else{
+                    return response()->json(
+                        [
+                            "status"=>201,
+                            "message"=>__("Failed To Save it"),
+                        ],
+                    );
+                }
+            }
+            return response()->json(
+                [
+                    "status"=>201,
+                    "message"=>__("Id Not Matched")
+                ],
+            );
+
+        }
+        return response()->json(
+            [
+                "status"=>201,
+                "message"=>__("Id Not Found")
+            ],
+        );
+
+
+    }
+    function productstatuschange(Request $request)
+    {
+        if ($request->id)
+        {
+            if($payout = product::find($request->id)){
+                $payout->productStatus = $request->val;
+
+                if($payout->save()){
+                    // if you want to perform any actions now you can create a use this function;
+//                        $this->payout($request->id, $text);
+                    $status = "Active";
+                    $badge = "success";
+                    if($request->val==0){
+                        $status = "Inactive";
+                        $badge = "secondary";
+                    }
+                    if($request->val==2){
+                        $status = "Pending";
+                        $badge = "warning";
+                    }
+                    if($request->val==3){
+                        $status = "Rejected";
+                        $badge = "danger";
+                    }
+
+                    return response()->json(
+                        [
+                            "status"=>200,
+                            "p_status"=>$status,
+                            "badge"=>$badge,
+                            "message"=>__("Changed Successfully."),
+                        ],
+                    );
+                }else{
+                    return response()->json(
+                        [
+                            "status"=>201,
+                            "message"=>__("Failed To Save it"),
+                        ],
+                    );
+                }
+            }
+            return response()->json(
+                [
+                    "status"=>201,
+                    "message"=>__("Id Not Matched")
+                ],
+            );
+
+        }
+        return response()->json(
+            [
+                "status"=>201,
+                "message"=>__("Id Not Found")
+            ],
+        );
+
+
+    }
+
+
     function create_vendor(Request $request){
-        if(!$request->name){
-        return  json_encode(["status"=>201,"message"=>__("Name Not Found")]);
+        if(!$request->vendorName){
+            return  json_encode(["status"=>201,"message"=>__("Name Not Found")]);
 
         }
-        if(!$request->email){
-        return  json_encode(["status"=>201,"message"=>__("Email Not Found")]);
 
-        }
         if(!$request->password){
-        return  json_encode(["status"=>201,"message"=>__("Password Not Found")]);
+            return  json_encode(["status"=>201,"message"=>__("Password Not Found")]);
         }
-        if(uservendor::where("email",$request->email)->first()){
-             return  json_encode(["status"=>201,"message"=>__("Email already exists!")]);
+        if(vendor::where("vendorEmail",$request->vendorEmail)->first()){
+            return  json_encode(["status"=>201,"message"=>__("Email already exists!")]);
 
 
         }
-        $vendor = new uservendor;
-        $vendor->name = $request->name;
-        $vendor->email = $request->email;
-        $vendor->password = $request->password;
+        $vendor = new vendor;
+        $vendor->vendorName = $request->vendorName?$request->vendorName:"";
+        $vendor->vendorEmail = $request->vendorEmail?$request->vendorEmail:"";
+        if($request->vendorEmail && vendor::where([["vendorEmail",$request->vendorEmail],["id","!=",$request->vendor_id]])->first())
+        {
+            return redirect('/edit/vendor/'.$request->vendor_id)->with('failed','Email already exists');
+
+        }
+        $vendor->vendorCategory = $request->vendorCategory?$request->vendorCategory:"";
+        $vendor->vendorType = $request->vendorType?$request->vendorType:"";
+        $vendor->isOtpVerify = $request->isOtpVerify?$request->isOtpVerify:"";
+        $vendor->storeName = $request->storeName?$request->storeName:"";
+        $vendor->gstNumber = $request->gstNumber?$request->gstNumber:"";
+        $vendor->storeCounty = $request->storeCounty?$request->storeCounty:"";
+        $vendor->storeCity = $request->storeCity?$request->storeCity:"";
+        $vendor->storeAddress = $request->storeAddress?$request->vendorCategory:"";
+        $vendor->vendorCountryCode = $request->vendorCountryCode?$request->vendorCountryCode:"";
+        $vendor->vendorContactNumber = $request->vendorContactNumber?$request->vendorContactNumber:"";
+        $vendor->storeLatitude = $request->storeLatitude?$request->storeLatitude:"";
+        $vendor->storeLongitude = $request->storeLongitude?$request->storeLongitude:"";
+        $vendor->vendorDomainUrl = $request->vendorDomainUrl?$request->vendorDomainUrl:"";
+        $vendor->vendorStatus = $request->vendorStatus?$request->vendorStatus:"";
+
+
+        if ($request->hasFile('storeWebLogo'))
+        {
+            $r = $request->file('storeWebLogo')
+                ->getPathName();
+            // Save the image
+            $path = public_path() . "/uploads/storeweblogo/";
+            $file = time() . rand() . $request->file('storeWebLogo')
+                    ->getClientOriginalName();
+            move_uploaded_file($r, $path . $file);
+
+            $vendor->storeWebLogo = $file;
+        }
+        if ($request->hasFile('storeAppLogo'))
+        {
+            $r = $request->file('storeAppLogo')
+                ->getPathName();
+            // Save the image
+            $path = public_path() . "/uploads/storeapplogo/";
+            $file = time() . rand() . $request->file('storeAppLogo')
+                    ->getClientOriginalName();
+            move_uploaded_file($r, $path . $file);
+
+            $vendor->storeAppLogo = $file;
+        }
         if($vendor->save()){
-            return json_encode(["status"=>200,"message"=>__("Vendor Created Successfuly"),"data"=>uservendor::find($vendor->id)]);
+            return json_encode(["status"=>200,"message"=>__("Vendor Created Successfully"),"data"=>vendor::find($vendor->id)]);
         }else{
             return  json_encode(["status"=>201,"message"=>__("Failed to Create Vendor")]);
         }
@@ -43,16 +335,16 @@ class vendor_ct extends Controller
         if($request->handle)
         {
             if($request->key){
-                return json_encode(uservendor::where($request->handle,$request->key)->get());
+                return json_encode(vendor::where($request->handle,$request->key)->get());
             }else{
-        return  json_encode(["status"=>201,"message"=>__("`key` field is Required while using `handle`")]);
+                return  json_encode(["status"=>201,"message"=>__("`key` field is Required while using `handle`")]);
 
             }
         }else{
             if($request->key){
-                return json_encode(["status"=>201,"data"=>uservendor::find($request->key),"domain"=>domain::where("vendor_id",$request->key)]);
+                return json_encode(["status"=>200,"data"=>vendor::find($request->key),"domain"=>domain::where("vendor_id",$request->key)]);
             }else{
-                return json_encode(uservendor::get());
+                return json_encode(vendor::get());
             }
         }
 
@@ -63,15 +355,15 @@ class vendor_ct extends Controller
         {
             return  json_encode(["status"=>201,"message"=>__("`id` field is Required")]);
         }else{
-            $vendor = uservendor::find($request->id);
+            $vendor = vendor::find($request->id);
             if($vendor){
-            if($vendor->delete()){
-                return json_encode(["status"=>200,"message"=>__("Vendor Deleted Successfuly")]);
+                if($vendor->delete()){
+                    return json_encode(["status"=>200,"message"=>__("Vendor Deleted Successfully")]);
+                }else{
+                    return json_encode(["status"=>202,"message"=>__("Failed to Delete Vendor")]);
+                }
             }else{
-                return json_encode(["status"=>202,"message"=>__("Failed to Delete Vendor")]);
-            }
-            }else{
-            return  json_encode(["status"=>201,"message"=>__("The requested id not matched.")]);
+                return  json_encode(["status"=>201,"message"=>__("The requested id not matched.")]);
             }
         }
     }
@@ -80,77 +372,83 @@ class vendor_ct extends Controller
     {
         if($request->id)
         {
-        if($vendor = uservendor::find($request->id)){
-        $vendor->name = $request->name?$request->name:$vendor->name;
-        $vendor->email = $request->email?$request->email:$vendor->email;
-        if($request->email && uservendor::where([["email",$request->email],["id","!=",$request->id]])->first())
-        {
-        return  json_encode(["status"=>201,"message"=>__("Email already exists")]);
-
-        }
-        $vendor->password = $request->password?$request->password:$vendor->password;
-        $vendor->otp_verified = $request->otp_verified?$request->otp_verified:$vendor->otp_verified;
-        $vendor->store_name = $request->store_name?$request->store_name:$vendor->store_name;
-        $vendor->store_category = $request->store_category?$request->store_category:$vendor->store_category;
-        $vendor->store_category_id = $request->store_category_id?$request->store_category_id:$vendor->store_category_id;
-        $vendor->country_code = $request->country_code?$request->country_code:$vendor->country_code;
-        $vendor->whatsapp = $request->whatsapp?$request->whatsapp:$vendor->whatsapp;
-        $vendor->phone = $request->phone?$request->phone:$vendor->phone;
-        $vendor->address = $request->address?$request->address:$vendor->address;
-        $vendor->url = $request->url?$request->url:$vendor->url;
-        $vendor->map_lattitude = $request->map_lattitude?$request->map_lattitude:$vendor->map_lattitude;
-        $vendor->map_longitude = $request->map_longitude?$request->map_longitude:$vendor->map_longitude;
-        $vendor->shop_in_app = $request->shop_in_app?$request->shop_in_app:$vendor->shop_in_app;
-
-        if ($request->hasFile('logo'))
-        {
-                $r = $request->file('logo')
-                    ->getPathName();
-                // Save the image
-                $path = public_path() . "/asset/";
-                $file = time() . rand() . $request->file('logo')
-                    ->getClientOriginalName();
-                move_uploaded_file($r, $path . $file);
-                if($vendor->logo)
+            if($vendor = vendor::find($request->id)){
+                $vendor->vendorName = $request->vendorName?$request->vendorName:$vendor->vendorName;
+                $vendor->vendorEmail = $request->vendorEmail?$request->vendorEmail:$vendor->vendorEmail;
+                if($request->vendorEmail && vendor::where([["vendorEmail",$request->vendorEmail],["id","!=",$request->vendor_id]])->first())
                 {
-                    if(file_exists(public_path() . "/../".$vendor->logo)){
-                    unlink(public_path() . "/../".$vendor->logo);
-                    }  
+                    return redirect('/edit/vendor/'.$request->vendor_id)->with('successfully','Email already exists');
 
                 }
-            $vendor->logo = "/public/asset/".$file;
-        }
-        if ($request->hasFile('featured_image'))
-        {
-                $r = $request->file('featured_image')
-                    ->getPathName();
-                // Save the image
-                $path = public_path() . "/asset/";
-                $file = time() . rand() . $request->file('featured_image')
-                    ->getClientOriginalName();
-                move_uploaded_file($r, $path . $file);
-                if($vendor->featured_image)
+                $vendor->vendorCategory = $request->vendorCategory?$request->vendorCategory:$vendor->vendorCategory;
+                $vendor->vendorType = $request->vendorType?$request->vendorType:$vendor->vendorType;
+                $vendor->isOtpVerify = $request->isOtpVerify?$request->isOtpVerify:$vendor->isOtpVerify;
+                $vendor->storeName = $request->storeName?$request->storeName:$vendor->storeName;
+                $vendor->gstNumber = $request->gstNumber?$request->gstNumber:$vendor->gstNumber;
+                $vendor->storeCounty = $request->storeCounty?$request->storeCounty:$vendor->storeCounty;
+                $vendor->storeCity = $request->storeCity?$request->storeCity:$vendor->storeCity;
+                $vendor->storeAddress = $request->storeAddress?$request->vendorCategory:$vendor->storeAddress;
+                $vendor->vendorCountryCode = $request->vendorCountryCode?$request->vendorCountryCode:$vendor->vendorCountryCode;
+                $vendor->vendorContactNumber = $request->vendorContactNumber?$request->vendorContactNumber:$vendor->vendorContactNumber;
+                $vendor->storeLatitude = $request->storeLatitude?$request->storeLatitude:$vendor->storeLatitude;
+                $vendor->storeLongitude = $request->storeLongitude?$request->storeLongitude:$vendor->storeLongitude;
+                $vendor->vendorDomainUrl = $request->vendorDomainUrl?$request->vendorDomainUrl:$vendor->vendorDomainUrl;
+                $vendor->vendorStatus = $request->vendorStatus?$request->vendorStatus:0;
+
+
+                if ($request->hasFile('storeWebLogo'))
                 {
-                    if(file_exists(public_path() . "/../".$vendor->featured_image)){
-                    unlink(public_path() . "/../".$vendor->featured_image);
+                    $r = $request->file('storeWebLogo')
+                        ->getPathName();
+                    // Save the image
+                    $path = public_path() . "/uploads/storeweblogo/";
+                    $file = time() . rand() . $request->file('storeWebLogo')
+                            ->getClientOriginalName();
+                    move_uploaded_file($r, $path . $file);
+                    if($vendor->storeWebLogo)
+                    {
+                        if(file_exists(public_path() . "/../".$vendor->storeWebLogo)){
+                            unlink(public_path() . "/../".$vendor->storeWebLogo);
+                        }
+
                     }
+                    $vendor->storeWebLogo = $file;
                 }
-            $vendor->featured_image = "/public/asset/".$file;
-        }
+                if ($request->hasFile('storeAppLogo'))
+                {
+                    $r = $request->file('storeAppLogo')
+                        ->getPathName();
+                    // Save the image
+                    $path = public_path() . "/uploads/storeapplogo/";
+                    $file = time() . rand() . $request->file('storeAppLogo')
+                            ->getClientOriginalName();
+                    move_uploaded_file($r, $path . $file);
+                    if($vendor->storeAppLogo)
+                    {
+                        if(file_exists(public_path() . "/../".$vendor->storeAppLogo)){
+                            unlink(public_path() . "/../".$vendor->storeAppLogo);
+                        }
+                    }
+                    $vendor->storeAppLogo = $file;
+                }
 
-        if($vendor->save()){
-            return json_encode(["status"=>200,"message"=>__("Vendor Saved Successfuly"),"data"=>uservendor::find($vendor->id)]);
-        }else{
-            return  json_encode(["status"=>201,"message"=>__("Failed to Save Vendor")]);
-        }
+                if($vendor->save()){
+                    return json_encode(["status"=>200,"message"=>__("Vendor Saved Successfully"),"data"=>vendor::find($vendor->id)]);
+                }else{
+                    return  json_encode(["status"=>201,"message"=>__("Failed to Save Vendor")]);
+                }
 
-        }else{
-            return  json_encode(["status"=>202,"message"=>__("Id Not Matched")]);
-        }
+            }else{
+                return  json_encode(["status"=>202,"message"=>__("Id Not Matched")]);
+            }
 
 
         }else{
             return  json_encode(["status"=>203,"message"=>__("`id` not found")]);
         }
-}
+    }
+
+    private function payout($id, string $text)
+    {
+    }
 }

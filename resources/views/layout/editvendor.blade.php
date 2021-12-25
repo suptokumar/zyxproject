@@ -23,87 +23,115 @@
             @csrf
             <input type="hidden" name="vendor_id" value="{{$editvendor->id}}">
             <div class="form-group">
-                <label for="">Name</label>
-                <input type="text" class="form-control" name="name" value="{{$editvendor->name}}" id="" aria-describedby="emailHelp" placeholder="Enter Name">
+                <label for="vendorName">Name</label>
+                <input type="text" class="form-control" name="vendorName" value="{{$editvendor->vendorName}}" id="vendorName" aria-describedby="vendorName">
             </div>
             <div class="form-group">
-                <label for="">Email address</label>
-                <input type="email" class="form-control" name="email" value="{{$editvendor->email}}" id="" aria-describedby="emailHelp"placeholder="Enter email">
+                <label for="vendorEmail">Email address</label>
+                <input type="email" class="form-control" name="vendorEmail" value="{{$editvendor->vendorEmail}}" id="vendorEmail" aria-describedby="vendorEmail">
             </div>
             <div class="form-group">
                 <label for="">Password </label>
-                <input type="text" class="form-control" name="password" value="{{$editvendor->password}}" id="" aria-describedby="emailHelp" placeholder="">
+                <input type="text" class="form-control" name="password" placeholder="Leave it empty if you don't want to edit it" id="" aria-describedby="emailHelp" placeholder="">
             </div>
             <div class="form-group">
-                <label for="">OTP Verified </label>
-                <select class="form-control" name="otp_verified">
-                    <option value="1" {{$editvendor->otp_verified==1?'selected':""}}>Yes</option>
-                    <option value="0" {{$editvendor->otp_verified==0?'selected':""}}>No</option>
+                <label for="vendorCategory">Vendor Category </label>
+                <select class="form-control" name="vendorCategory" id="vendorCategory">
+                    <option>Select</option>
+                    @foreach($vendorCategories as $vendorCategory)
+                        <option value="{{$vendorCategory->id}}" {{$editvendor->vendorCategory==$vendorCategory->id?'selected':""}}>
+                            {{$vendorCategory->categoryName}}</option>
+                    @endforeach
+
                 </select>
             </div>
             <div class="form-group">
-                <label for="">Store Name </label>
-                <input type="text" class="form-control" name="store_name" value="{{$editvendor->store_name}}" id="" aria-describedby="emailHelp" placeholder="">
+                <label for="vendorType">Vendor Type </label>
+                <select class="form-control" name="vendorType" id="vendorType">
+                    <option>Select</option>
+                    @foreach($vendorTypes as $vendorCategory)
+                        <option value="{{$vendorCategory->id}}" {{$editvendor->vendorType==$vendorCategory->id?'selected':""}}>
+                            {{$vendorCategory->typeName}}</option>
+                    @endforeach
+
+                </select>
             </div>
             <div class="form-group">
-                <label for="">Store Category </label>
-                <input type="text" class="form-control" name="store_category" value="{{$editvendor->store_category}}" id="" aria-describedby="emailHelp" placeholder="">
+                <label for="isOtpVerify">OTP Verified </label>
+                <select class="form-control" name="isOtpVerify" id="isOtpVerify">
+                    <option value="1" {{$editvendor->isOtpVerify==1?'selected':""}}>Yes</option>
+                    <option value="0" {{$editvendor->isOtpVerify==0?'selected':""}}>No</option>
+                </select>
             </div>
             <div class="form-group">
-                <label for="">Store Category ID</label>
-                <input type="text" class="form-control" name="store_category_id" value="{{$editvendor->store_category_id}}" id="" aria-describedby="emailHelp" placeholder="">
+                <label for="storeName">Store Name </label>
+                <input type="text" class="form-control" name="storeName" value="{{$editvendor->storeName}}" id="" aria-describedby="storeName" placeholder="">
             </div>
             <div class="form-group">
-                <label for="">Country Code </label>
-                <input type="text" class="form-control" name="country_code" value="{{$editvendor->country_code }}" id="" aria-describedby="emailHelp" placeholder="">
+                <label for="gstNumber">GST Number</label>
+                <input type="text" class="form-control" name="gstNumber" value="{{$editvendor->gstNumber}}" id="gstNumber" aria-describedby="emailHelp" placeholder="">
             </div>
             <div class="form-group">
-                <label for="">WhatsApp</label>
-                <input type="text" class="form-control" name="whatsapp" value="{{$editvendor->whatsapp}}" id="" aria-describedby="emailHelp" placeholder="">
+                <label for="storeCounty">Store Country</label>
+                <input type="text" class="form-control" name="storeCounty" value="{{$editvendor->storeCounty}}" id="storeCounty" aria-describedby="storeCounty" placeholder="">
             </div>
             <div class="form-group">
-                <label for="">Phone</label>
-                <input type="text" class="form-control" name="phone" value="{{$editvendor->phone}}" id="" aria-describedby="emailHelp" placeholder="">
+                <label for="storeCity">Store City</label>
+                <input type="text" class="form-control" name="storeCity" value="{{$editvendor->storeCity}}" id="storeCity" aria-describedby="storeCity" placeholder="">
             </div>
             <div class="form-group">
-                <label for="">Address</label>
-                <input type="text" class="form-control" name="address" value="{{$editvendor->address}}" id="" aria-describedby="emailHelp" placeholder="">
+                <label for="storeAddress">Store Address</label>
+                <input type="text" class="form-control" name="storeAddress" value="{{$editvendor->storeAddress}}" id="storeAddress" aria-describedby="storeAddress" placeholder="">
+            </div>
+
+            <div class="form-group">
+                <label for="vendorCountryCode">Country Code</label>
+                <input type="text" class="form-control" name="vendorCountryCode" value="{{$editvendor->vendorCountryCode}}" id="vendorCountryCode" aria-describedby="emailHelp" placeholder="">
+            </div>
+
+            <div class="form-group">
+                <label for="vendorContactNumber">Contact Number</label>
+                <input type="text" class="form-control" name="vendorContactNumber" value="{{$editvendor->vendorContactNumber}}" id="" aria-describedby="vendorContactNumber" placeholder="">
             </div>
             <div class="form-group">
-                <label for="">Logo</label>
-                <input type="file" class="form-control" name="logo" id="logo" aria-describedby="emailHelp" placeholder="">
-                @if ($editvendor->logo!='')
+                <label for="storeLatitude">Map Lattitude</label>
+                <input type="text" class="form-control" name="storeLatitude" value="{{$editvendor->storeLatitude}}" id="storeLatitude" aria-describedby="storeLatitude" placeholder="">
+            </div>
+            <div class="form-group">
+                <label for="storeLongitude">Map Longitude</label>
+                <input type="text" class="form-control" name="storeLongitude" value="{{$editvendor->storeLongitude}}" id="storeLongitude" aria-describedby="emailHelp" placeholder="">
+            </div>
+
+            <div class="form-group">
+                <label for="storeWebLogo">Web Logo</label>
+                <input type="file" class="form-control" name="storeWebLogo" id="storeWebLogo" aria-describedby="emailHelp" placeholder="">
+                @if ($editvendor->storeWebLogo!='')
                 <label for="logo">
-                <img src="{{url($editvendor->logo)}}" alt="" style="width:100px;">
+                <img src="{{url("public/uploads/storeweblogo/".$editvendor->storeWebLogo)}}" alt="" style="width:100px;">
                 </label>
                 @endif
             </div>
             <div class="form-group">
-                <label for="">Featured Image</label>
-                <input type="file" id="featured_image" class="form-control" name="featured_image" value="" aria-describedby="emailHelp" placeholder="">
-                @if ($editvendor->featured_image!='')
-                <label for="featured_image">
-                <img src="{{url($editvendor->featured_image)}}" alt="" style="width:100px;">
+                <label for="storeAppLogo">App Logo</label>
+                <input type="file" class="form-control" name="storeAppLogo" id="storeAppLogo" aria-describedby="emailHelp" placeholder="">
+                @if ($editvendor->storeAppLogo!='')
+                <label for="logo">
+                <img src="{{url("public/uploads/storeapplogo/".$editvendor->storeAppLogo)}}" alt="" style="width:100px;">
                 </label>
                 @endif
             </div>
+
             <div class="form-group">
-                <label for="">URL</label>
-                <input type="text" class="form-control" name="url" value="{{$editvendor->url}}" id="" aria-describedby="emailHelp" placeholder="">
+                <label for="vendorDomainUrl">Domain URL</label>
+                <input type="text" class="form-control" name="vendorDomainUrl" value="{{$editvendor->vendorDomainUrl}}" id="vendorDomainUrl" placeholder="">
             </div>
+
             <div class="form-group">
-                <label for="">Map Lattitude</label>
-                <input type="text" class="form-control" name="map_lattitude" value="{{$editvendor->map_lattitude}}" id="" aria-describedby="emailHelp" placeholder="">
-            </div>
-            <div class="form-group">
-                <label for="">Map Longitude</label>
-                <input type="text" class="form-control" name="map_longitude" value="{{$editvendor->map_longitude}}" id="" aria-describedby="emailHelp" placeholder="">
-            </div>
-            <div class="form-group">
-                <label for="">Shop in App</label>
-                <select class="form-control" name="shop_in_app">
-                    <option value="1" {{$editvendor->shop_in_app==1?'selected':""}}>Yes</option>
-                    <option value="0" {{$editvendor->shop_in_app==0?'selected':""}}>No</option>
+                <label for="vendorStatus">Vendor Status</label>
+                <select class="form-control" name="vendorStatus">
+                    <option value="1" {{$editvendor->vendorStatus==1?'selected':""}}>Open</option>
+                    <option value="2" {{$editvendor->vendorStatus==2?'selected':""}}>Delete</option>
+                    <option value="0" {{$editvendor->vendorStatus==0?'selected':""}}>Close</option>
                 </select>
             </div>
             <button type="submit" class="btn btn-primary">Update</button>
